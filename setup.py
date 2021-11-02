@@ -15,6 +15,6 @@ setup(
     install_requires=[],
     entry_points='''
         [console_scripts]
-        delta_migrations=data_migrations:cli
+        delta_migrations=delta_migrations:cli
     ''',
 )
