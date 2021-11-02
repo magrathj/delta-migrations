@@ -1,31 +1,20 @@
-# import subprocess
-# import pytz
+import shutil 
+from os import path
+from data_migrations import app
+from click.testing import CliRunner
 
-# from src.logic import area, area_zone, timezones, format_location
+def test_creating_migration_dir_without_location():
+    """test creation of history table without a path"""
+    runner = CliRunner()
+    result = runner.invoke(app.create_migration_dir)
+    assert not result.exception
+    assert path.exists('/tmp/delta_migrations') == True
+    shutil.rmtree('/tmp/delta_migrations')
 
-
-# def capture(command):
-#     proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
-#     out, err = proc.communicate()
-#     return out, err, proc.returncode
-
-
-# def test_timezones():
-#     assert timezones("PDT") == "PST8PDT"
-#     assert timezones("WAT") == "Etc/GMT+1"
-#     assert timezones("CDT") == "CST6CDT"
-#     assert timezones("HST") == "HST"
-
-
-# def test_format_location():
-#     assert format_location("Pago Pago") == "Pago_Pago"
-#     assert format_location("New York") == "New_York"
-#     assert format_location("St Helena") == "St_Helena"
-
-
-# def test_area():
-#     command = ["python", "src/main.py", "--location", "New York"]
-#     out, err, exitcode = capture(command)
-#     assert exitcode == 0
-#     assert out == area("New York")
-#     assert err == b""
+def test_creating_migration_dir_with_location():
+    """test creation of history table with a path"""
+    runner = CliRunner()
+    result = runner.invoke(app.create_migration_dir, ['--location', '/tmp/new_delta_migrations'])
+    assert not result.exception
+    assert path.exists('/tmp/new_delta_migrations') == True
+    shutil.rmtree('/tmp/new_delta_migrations')
