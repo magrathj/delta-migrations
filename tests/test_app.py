@@ -1,6 +1,6 @@
 import shutil 
 from os import path
-from data_migrations import app
+from delta_migrations import app
 from click.testing import CliRunner
 
 def test_creating_migration_dir_without_location():

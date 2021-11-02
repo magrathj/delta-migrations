@@ -1,7 +1,7 @@
 import shutil 
 from os import path
-from data_migrations.schema_migration_table import  schema
-from data_migrations.schema_migration_utils import create_migration_table
+from delta_migrations.schema_migration_table import  schema
+from delta_migrations.schema_migration_utils import create_migration_table
 
 def test_creating_migration_table(spark):
     path = '\tmp\migrations/history_table'
