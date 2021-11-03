@@ -116,6 +116,18 @@ def change_delta_table_column_type(spark, table_name, col_name, data_type):
         .saveAsTable(table_name)
     )
 
+def change_delta_table_column_name(spark, table_name, col_name, new_col_name):
+    """Change column type requires overwrite of schema"""
+    (
+        spark.read.table(table_name)
+        .withColumnRenamed(col_name, new_col_name)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .option("overwriteSchema", "true")
+        .saveAsTable(table_name)
+    )
+
 def create_delta_table(spark, path, table_name, schema):
     """create delta table in designated path"""
     print ("Creating delta table...")
@@ -128,3 +140,26 @@ def create_delta_table(spark, path, table_name, schema):
         .option("path", path)
         .saveAsTable(table_name)
     )
+
+def modify_delta_table():
+    """
+
+    table_name - required str of the name of the delta table
+    path - required str of the location of the delta table
+    modify_type - required str of what modification you want to apply to the delta table, can be one of the following ['create_table', 'add_column', 'drop_column', 'change_column_type', 'change_column_name', 'add_constraint', 'drop_constraint', 'add_table_property', 'drop_column_non_nullability' ]
+    schema - optional pyspark.type object describing the model of the table. Required for modify_type='create_table'
+    partition_by - optional str of column_names to partition the delta table by
+
+
+    Example:
+    [
+        {
+            'table_name': 'test',
+            'path': '/mnt/bronze/delta/test', 
+            'modify_type': 'create_table'
+            'schema': StructType([StructField("script_name", StringType(), False), StructField("applied", TimestampType(), False)])
+            'partition_by': [col_name_1, col_name_2],
+        }
+    ]
+    """
+    pass
