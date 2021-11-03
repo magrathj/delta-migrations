@@ -5,8 +5,8 @@ import shutil
 import pyspark
 from delta import *
 from pyspark.sql.functions import col
-from delta_migrations.schema_migration_runner import main
 from delta_migrations.schema_migration_table import  schema
+from delta_migrations.schema_migration_runner import main, run_migrations, MigrationScriptNotFound
 
 class Helper:
 
@@ -17,6 +17,12 @@ class Helper:
 
     def create_migration_script(self, script_name="0001_migration.py"):
         f = open(script_name, "a")
+        f.close()
+
+    def create_migration_script_with_code(self):
+        f = open("0001_migration.py", "a")
+        f.write('f = open("0000_migration.py", "a") \n')
+        f.write('f.close() \n')
         f.close()
 
     def tear_down_delta_table(self):
@@ -104,3 +110,19 @@ class TestMigrations:
         results = df.collect()
         assert results[0].script_name == script_name
         migration_helper.tear_down()
+
+    def test_run_migrations(self, resource, spark):
+        migration_path = '/tmp/migrations/history_table'
+        migration_helper = Helper(spark, migration_path, schema)
+        migration_helper.create_migration_script_with_code()
+        migration_helper.create_history_table()
+        run_migrations(spark, ["0001_migration.py"], migration_path, schema)
+        list_of_migration_scripts = glob.glob('*_migration.py')
+        assert list_of_migration_scripts == ["0000_migration.py", "0001_migration.py"]
+        migration_helper.tear_down()
+
+    def test_run_migrations_with_exception(self, resource, spark):
+        migration_path = '/tmp/migrations/history_table'
+        with pytest.raises(MigrationScriptNotFound) as excinfo:
+            run_migrations(spark, ["XXXX_migration.py"], migration_path, schema)
+        assert "Migration Exception" in str(excinfo.value)
