@@ -2,7 +2,7 @@ import re
 import glob
 import datetime
 from pyspark.sql.functions import col
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 
 def get_datetime():
     """return current time"""
