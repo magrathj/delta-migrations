@@ -1,7 +1,6 @@
 import re
 import glob
 import datetime
-from subprocess import call
 from pyspark.sql.functions import col
 
 def get_datetime():
@@ -63,14 +62,4 @@ def migrations_to_run(migration_records_list, migration_list):
     migrations_to_run        = list(set(migration_list) - set(migration_records_list))
     migrations_to_run_sorted = sorted(migrations_to_run, key=lambda x:int(re.match(r'(\d+)',x).groups()[0])) 
     return migrations_to_run_sorted
-
-def run_migrations(migrations_to_run):
-    """run and record migration"""
-    for migration in migrations_to_run:
-        try:
-            call(["python", migration])
-        except Exception as e:
-            raise Exception(f"Migration: {migration} failed with the exception {e}") 
-        else:
-            record_migration(migration)
 
