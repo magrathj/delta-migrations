@@ -13,5 +13,8 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[],
-    entry_points={"console_scripts": ["delta_migrations = src.main:main"]},
+    entry_points='''
+        [console_scripts]
+        delta_migrations=delta_migrations:cli
+    ''',
 )
