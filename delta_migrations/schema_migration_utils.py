@@ -10,18 +10,23 @@ def get_datetime():
 
 def migrations_table_exists(spark, path):
     """verify if migration table exists"""
-    pass
+    try:
+        df = spark.read.format("delta").load(path)
+        return True
+    except Exception as e:
+        return False
   
 def create_migration_table(spark, path, schema):
     """create migration table in designated path"""
     print ("Creating _migrations table...")
-    (spark
-    .createDataFrame([], schema)
-    .write
-    .format("delta")
-    .mode("overwrite")
-    .option("path", path)
-    .saveAsTable("migrations")
+    (
+      spark
+        .createDataFrame([], schema)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .option("path", path)
+        .saveAsTable("migrations")
     )    
     
 
