@@ -2,6 +2,7 @@ import re
 import glob
 import datetime
 from pyspark.sql.functions import col
+from concurrent.futures import ThreadPoolExecutor
 
 def get_datetime():
     """return current time"""
@@ -63,3 +64,16 @@ def migrations_to_run(migration_records_list, migration_list):
     migrations_to_run_sorted = sorted(migrations_to_run, key=lambda x:int(re.match(r'(\d+)',x).groups()[0])) 
     return migrations_to_run_sorted
 
+
+def parallel_run_function(function_definition, function_info): 
+    """Function which takes a function and a list of dictionaries as arguments, so to pass to multiple instances of the function"""
+    pool = ThreadPoolExecutor((len(function_info)))
+    futures = []
+    for info in function_info:
+        futures.append(pool.submit(function_definition, 
+                                   function_info
+                                   )
+                    )
+    wait(futures)
+    for future in futures:
+        print(future.result())
