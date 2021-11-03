@@ -118,7 +118,7 @@ class TestMigrations:
         migration_helper.create_history_table()
         run_migrations(spark, ["0001_migration.py"], migration_path, schema)
         list_of_migration_scripts = glob.glob('*_migration.py')
-        assert list_of_migration_scripts == ["0000_migration.py", "0001_migration.py"]
+        assert sorted(list_of_migration_scripts) == sorted(["0000_migration.py", "0001_migration.py"])
         migration_helper.tear_down()
 
     def test_run_migrations_with_exception(self, resource, spark):
