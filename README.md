@@ -23,6 +23,10 @@ The migration files for each app live in a “migrations” directory inside of 
 ### Developer Setup
 
 ```
+    pip install -r requirements.txt
+```
+
+```
     pip install -e .
 ```
 

@@ -20,10 +20,10 @@ def create_migration_table(spark, path, schema):
     .write
     .format("delta")
     .mode("overwrite")
-    .save(path)
+    .option("path", path)
+    .saveAsTable("migrations")
     )    
-    # .option("path", path)
-    # .saveAsTable("migrations")
+    
 
 def record_migration(spark, script_name, path, schema):
     """record migration to history table"""

@@ -1,7 +1,7 @@
 
 import pytest
 import pyspark
-from delta import configure_spark_with_delta_pip
+from delta import *
 
 @pytest.fixture(scope="session")
 def spark(tmp_path_factory):
@@ -13,13 +13,8 @@ def spark(tmp_path_factory):
         .appName("delta_migrations")
         .config("spark.sql.shuffle.partitions", "1")
         .config("spark.default.parallelism", "1")
-        .config("spark.jars.packages", "com.databricks:spark-xml_2.11:0.5.0,io.delta:delta-core_2.12:1.0.0")
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") 
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
-        .config("spark.sql.adaptive.coalescePartitions.initialPartitionNum", "1")
-        .config("spark.sql.warehouse.dir", tmp_path)
-        .config("spark.driver.extraJavaOptions", f"-Dderby.system.home={tmp_path}")
-        .enableHiveSupport()
     )
     spark = spark = configure_spark_with_delta_pip(builder).getOrCreate()
     yield spark
