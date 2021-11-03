@@ -1,8 +1,8 @@
 import re
+import glob
 import datetime
-from pyspark.sql import Row
+from subprocess import call
 from pyspark.sql.functions import col
-
 
 def get_datetime():
     """return current time"""
@@ -19,10 +19,11 @@ def create_migration_table(spark, path, schema):
     .createDataFrame([], schema)
     .write
     .format("delta")
+    .mode("overwrite")
     .save(path)
+    )    
     # .option("path", path)
     # .saveAsTable("migrations")
-    )
 
 def record_migration(spark, script_name, path, schema):
     """record migration to history table"""
@@ -47,6 +48,11 @@ def migration_records_to_list(migration_records_df):
     migration_records_list   = [(row.script_name) for row in migration_records_df.select("script_name").collect()]
     return migration_records_list
 
+def get_list_of_migration_scripts():
+    """Run in the directory where the _migration.py scripts are available"""
+    migration_scripts = glob.glob('*_migration.py')
+    return migration_scripts
+
 def migrations_to_run(migration_records_list, migration_list):
     """find which migrations are not in the history table, so as to find only new migrations"""
     migrations_to_run        = list(set(migration_list) - set(migration_records_list))
@@ -54,6 +60,12 @@ def migrations_to_run(migration_records_list, migration_list):
     return migrations_to_run_sorted
 
 def run_migrations(migrations_to_run):
-    """run new migration"""
+    """run and record migration"""
     for migration in migrations_to_run:
-        record_migration(migration)
+        try:
+            call(["python", migration])
+        except Exception as e:
+            raise Exception(f"Migration: {migration} failed with the exception {e}") 
+        else:
+            record_migration(migration)
+

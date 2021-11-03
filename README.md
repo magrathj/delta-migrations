@@ -20,9 +20,11 @@ You should think of migrations as a version control system for your database sch
 The migration files for each app live in a “migrations” directory inside of that app, and are designed to be committed to, and distributed as part of, its codebase. You should be making them once on your development machine and then running the same migrations on your colleagues’ machines, your staging machines, and eventually your production machines.
 
 
-### Local Setup
+### Developer Setup
 
-pip install -e .
+```
+    pip install -e .
+```
 
 
 Note
