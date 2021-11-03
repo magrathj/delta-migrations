@@ -3,13 +3,15 @@ from . import schema_migration_table
 from . import schema_migration_utils
 
 
+class MigrationScriptNotFound(Exception):
+    """Migration Exception: Exception raised when migration script cannot be found."""
+
 def run_migrations(spark, migrations_to_run, path, schema):
     """run and record migration"""
     for migration in migrations_to_run:
-        try:
-            call(["python", migration])
-        except Exception as e:
-            raise Exception(f"Migration: {migration} failed with the exception {e}") 
+        result = call(["python", migration])
+        if result != 0:
+            raise MigrationScriptNotFound(f"Migration Exception: {migration} was not found") 
         else:
             schema_migration_utils.record_migration(spark, migration, path, schema)
 
