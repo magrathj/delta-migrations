@@ -5,7 +5,7 @@ setup(
     version="0.0.1",
     author="Jared Magrath",
     author_email="magrathj@tcd.ie",
-    description="Provides delta schema migrations",
+    description="Provides the ability to apply migrations to delta tables",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

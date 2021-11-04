@@ -1,7 +1,7 @@
 
 import click
 from . import app
-
+from .schema_migration_runner import main
 
 @click.group()
 def cli():

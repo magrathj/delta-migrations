@@ -77,3 +77,89 @@ def parallel_run_function(function_definition, function_info):
     wait(futures)
     for future in futures:
         print(future.result())
+
+
+def set_delta_table_properties(spark, table_name, table_property, table_property_value):
+    """Change Delta table properties using table name"""
+    spark.sql(f"ALTER TABLE {table_name} SET TBLPROPERTIES ({table_property}='{table_property_value}')")
+
+def add_columns_to_delta_table(spark, table_name, col_name, data_type):
+    """Change Delta table properties using table name"""
+    spark.sql(f"ALTER TABLE {table_name} ADD COLUMNS ({col_name} {data_type})")
+
+def add_non_nullability_to_delta_table_column(spark, table_name, col_name):
+    """Change Delta table properties using table name"""
+    spark.sql(f"ALTER TABLE {table_name} CHANGE COLUMN {col_name} ADD NOT NULL")
+
+def drop_non_nullability_to_delta_table_column(spark, table_name, col_name):
+    """Change Delta table properties using table name"""
+    spark.sql(f"ALTER TABLE {table_name} CHANGE COLUMN {col_name} DROP NOT NULL")
+
+def add_check_constraint_to_delta_table_column(spark, table_name, col_name, constraint):
+    """Change Delta table properties using table name"""
+    spark.sql(f"ALTER TABLE {table_name} ADD CONSTRAINT {col_name} CHECK ({constraint})")
+
+def drop_check_constraint_to_delta_table_column(spark, table_name, col_name):
+    """Change Delta table properties using table name"""
+    spark.sql(f"ALTER TABLE {table_name} DROP CONSTRAINT {col_name}")
+    
+    
+def change_delta_table_column_type(spark, table_name, col_name, data_type):
+    """Change column type requires overwrite of schema"""
+    (
+        spark.read.table(table_name)
+        .withColumn(col_name, col(col_name).cast(data_type))
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .option("overwriteSchema", "true")
+        .saveAsTable(table_name)
+    )
+
+def change_delta_table_column_name(spark, table_name, col_name, new_col_name):
+    """Change column type requires overwrite of schema"""
+    (
+        spark.read.table(table_name)
+        .withColumnRenamed(col_name, new_col_name)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .option("overwriteSchema", "true")
+        .saveAsTable(table_name)
+    )
+
+def create_delta_table(spark, path, table_name, schema):
+    """create delta table in designated path"""
+    print ("Creating delta table...")
+    (
+      spark
+        .createDataFrame([], schema)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .option("path", path)
+        .saveAsTable(table_name)
+    )
+
+def modify_delta_table():
+    """
+
+    table_name - required str of the name of the delta table
+    path - required str of the location of the delta table
+    modify_type - required str of what modification you want to apply to the delta table, can be one of the following ['create_table', 'add_column', 'drop_column', 'change_column_type', 'change_column_name', 'add_constraint', 'drop_constraint', 'add_table_property', 'drop_column_non_nullability' ]
+    schema - optional pyspark.type object describing the model of the table. Required for modify_type='create_table'
+    partition_by - optional str of column_names to partition the delta table by
+
+
+    Example:
+    [
+        {
+            'table_name': 'test',
+            'path': '/mnt/bronze/delta/test', 
+            'modify_type': 'create_table'
+            'schema': StructType([StructField("script_name", StringType(), False), StructField("applied", TimestampType(), False)])
+            'partition_by': [col_name_1, col_name_2],
+        }
+    ]
+    """
+    pass
