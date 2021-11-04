@@ -83,7 +83,7 @@ def set_delta_table_properties(spark, table_name, table_property, table_property
     """Change Delta table properties using table name"""
     spark.sql(f"ALTER TABLE {table_name} SET TBLPROPERTIES ({table_property}='{table_property_value}')")
 
-def add_columns_to_delta_table(spark, table_name):
+def add_columns_to_delta_table(spark, table_name, col_name, data_type):
     """Change Delta table properties using table name"""
     spark.sql(f"ALTER TABLE {table_name} ADD COLUMNS ({col_name} {data_type})")
 
