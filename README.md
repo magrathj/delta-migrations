@@ -1,6 +1,7 @@
 # delta-migrations
 Pyspark package to handle schema migrations in larger scale projects where incremental changes to tables are required. 
 
+[![delta-migration package](https://github.com/magrathj/delta-migrations/actions/workflows/python-package.yml/badge.svg)](https://github.com/magrathj/delta-migrations/actions/workflows/python-package.yml)
 
 ## Delta Migrations
 
