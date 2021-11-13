@@ -1,8 +1,8 @@
 import shutil 
 import datetime
 from os import path
-from delta_migrations.schema_migration_table import  schema
-from delta_migrations.schema_migration_utils import create_migration_table, record_migration, get_migration_records, migration_records_to_list, migrations_to_run, migrations_table_exists
+from delta_migrations.delta_migration_table import  schema
+from delta_migrations.delta_migration_utils import create_migration_table, record_migration, get_migration_records, migration_records_to_list, migrations_to_run, migrations_table_exists
 
 def test_creating_migration_table(spark):
     migration_path = '/tmp/migrations/history_table'

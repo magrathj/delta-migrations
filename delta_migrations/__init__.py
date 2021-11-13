@@ -1,8 +1,8 @@
 
 import click
 from . import app
-from .schema_migration_runner import main
-from .schema_migration_helper import DeltaMigrationHelper
+from .delta_migration_runner import DeltaMigrationRunner
+from .delta_migration_helper import DeltaMigrationHelper
 
 @click.group()
 def cli():
