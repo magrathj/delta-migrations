@@ -14,20 +14,6 @@ class DeltaMigrationBase(ABC):
         """ Apply modifying method to delta table """
         pass
 
-class DeltaMigrationSetTableProperties(DeltaMigrationBase):
-    """Create """
-
-    def __init__(self, spark):
-        self.spark = spark
-
-    def set_delta_table_properties(self, spark, table_name, table_property, table_property_value):
-        """Change Delta table properties using table name"""
-        print ("Creating delta table...")
-        spark.sql(f"ALTER TABLE {table_name} SET TBLPROPERTIES ({table_property}='{table_property_value}')")
-
-    def transform(self, modify_dict: dict):
-        self.set_delta_table_properties(self.spark, modify_dict['table_name'], modify_dict['table_property'], modify_dict['table_property_value'])
-
 class DeltaMigrationAddColumn(DeltaMigrationBase):
     """Create """
 
@@ -134,23 +120,10 @@ class DeltaMigrationCreateTable(DeltaMigrationBase):
 class DeltaMigrationHelper:
     """Delta migration helper class to help creating migrations"""
 
-    MODIFY_TYPE = ['create_table', 'add_column', 'drop_column', 'change_column_type', 'change_column_name', 'add_constraint', 'drop_constraint', 'add_table_property', 'drop_column_non_nullability' ]
+    MODIFY_TYPE = ['create_table', 'add_column', 'drop_column', 'change_column_type', 'change_column_name', 'add_constraint']
     
     def __init__(self, spark):
         self.spark = spark
-
-    def parallel_run_function(self, function_definition, function_info): 
-        """Function which takes a function and a list of dictionaries as arguments, so to pass to multiple instances of the function"""
-        pool = ThreadPoolExecutor((len(function_info)))
-        futures = []
-        for info in function_info:
-            futures.append(pool.submit(function_definition, 
-                                        function_info
-                                        )
-                        )
-        wait(futures)
-        for future in futures:
-            print(future.result())
 
     def get_modify_delta_table_dictionary(self):
         modify_delta_table_dict = {
@@ -223,7 +196,7 @@ class DeltaMigrationHelper:
         data_type - optional str of column type to change too
 
 
-        ['create_table', 'add_column', 'drop_column', 'change_column_type', 'change_column_name', 'add_constraint', 'drop_constraint', 'add_table_property', 'drop_column_non_nullability' ]
+        ['create_table', 'add_column', 'drop_column', 'change_column_type', 'change_column_name', 'add_constraint']
         Example:
         
         # create a new table
@@ -239,7 +212,8 @@ class DeltaMigrationHelper:
             'table_name': 'example2',
             'path': '/mnt/bronze/delta/example2', 
             'modify_type': 'add_column',
-            'col_name': 'script_name'
+            'col_name': 'script_number,
+            'data_type': 'int'
         },
         # drop column of an existing table
         {
@@ -272,8 +246,8 @@ class DeltaMigrationHelper:
         if not modify_type:
             raise MigrationModifyTypeDoesNotExist(f"Modify type is missing or doesnt exist. Please use one of the following {self.MODIFY_TYPE}")
         # get mapping class
-        modify_func = modify_delta_table_dict[modify_type]['function_mapping']
+        modify_func_class = modify_delta_table_dict[modify_type]['function_mapping']
         # apply transform from mapping class
-        modify_func(self.spark).transform(modify_dict)
+        modify_func_class(self.spark).transform(modify_dict)
 
 
