@@ -13,9 +13,9 @@ from urllib.request import urlopen
 def create_migration_dir(location):
    
     click.echo(f"Creating directory at {location}")
-    os.makedirs(f"{location}/migrations", exist_ok=True)
+    os.makedirs(f"{location}/", exist_ok=True)
     
-    click.echo(f"Add delta migration starter scripts to {location}")
+    click.echo(f"Add delta migration starter scripts to {location}/delta-migrations-template-main/")
 
     zip_url = "https://github.com/magrathj/delta-migrations-template/archive/refs/heads/main.zip"
     with urlopen(zip_url) as zip_resp:
