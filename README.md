@@ -11,10 +11,16 @@ Delta migrations is a way of propagating changes you make to your models (adding
 
 There are several commands which you will use to interact with migrations and Delta’s handling of database schema:
 
-    create_migration_dir, creates a directory to hold your delta migration scripts.
+    create_migration_dir, creates a directory to hold your delta migration scripts with a downloaded template scripts.
     
 
-You should think of migrations as a version control system for your database schema. makemigrations is responsible for packaging up your model changes into individual migration files - analogous to commits - and migrate is responsible for applying those to your database.
+**Example**
+```
+    delta_migrations create-migration-dir /tmp/delta_migration/
+```
+
+
+You should think of migrations as a version control system for your database schema.
 
 The migration files for each app live in a “migrations” directory inside of that app, and are designed to be committed to, and distributed as part of, its codebase. You should be making them once on your development machine and then running the same migrations on your colleagues’ machines, your staging machines, and eventually your production machines.
 
