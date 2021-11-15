@@ -5,8 +5,8 @@ import shutil
 import pyspark
 from delta import *
 from pyspark.sql.functions import col
-from delta_migrations.delta_migration_table import  schema
-from delta_migrations.delta_migration_runner import DeltaMigrationRunner, MigrationScriptNotFound
+from delta_migrations.table import  schema
+from delta_migrations.runner import DeltaMigrationRunner, MigrationScriptNotFound
 
 class TestingHelper():
 

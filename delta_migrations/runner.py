@@ -1,6 +1,6 @@
 from subprocess import call
-from . import delta_migration_table
-from . import delta_migration_utils
+from . import table as delta_migration_table
+from . import utils as delta_migration_utils
 
 
 class MigrationScriptNotFound(Exception):
