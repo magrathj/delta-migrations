@@ -44,8 +44,8 @@ jobs:
       - name: Run unit tests
         run: python -m pytest --cov=delta_migrations tests/
         
-  Integration:
-    name: Integration Test
+  End2EndTest:
+    name: End to End Test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -53,6 +53,8 @@ jobs:
           - ubuntu-latest
         python-version:
           - 3.7
+          - 3.8
+          - 3.9
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
