@@ -69,6 +69,7 @@ jobs:
       - name: Install package
         run: pip install -e .
       - name: Create Migration directory 
-        run: delta_migrations create-migration-dir
+        run: delta_migrations create-migration-dir 
       - name: Run migrations  
-        run: python -m /tmp/delta_migrations/delta-migrations-template-main/src/main.py
+        run: python /tmp/delta_migrations/delta-migrations-template-main/src/main.py
+                       
