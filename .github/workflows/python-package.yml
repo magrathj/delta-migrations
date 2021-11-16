@@ -66,7 +66,9 @@ jobs:
           pip install -r requirements.txt 
       - name: Build binary wheel and a source tarball
         run: python setup.py sdist
+      - name: Install package
+        run: pip install -e .
       - name: Create Migration directory 
-        run: delta_migrations create-migrations
+        run: delta_migrations create-migration-dir
       - name: Run migrations  
         run: python -m /tmp/delta_migrations/delta-migrations-template-main/src/main.py
