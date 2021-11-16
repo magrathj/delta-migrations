@@ -43,3 +43,35 @@ jobs:
         run: python setup.py sdist
       - name: Run unit tests
         run: python -m pytest --cov=delta_migrations tests/
+        
+  End2EndTest:
+    name: End to End Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        python-version:
+          - 3.7
+          - 3.8
+          - 3.9
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: ${{matrix.python-version}}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt 
+      - name: Build binary wheel and a source tarball
+        run: python setup.py sdist
+      - name: Install package
+        run: pip install -e .
+      - name: Create Migration directory 
+        run: delta_migrations create-migration-dir 
+      - name: Run migrations  
+        run: python /tmp/delta_migrations/delta-migrations-template-main/src/main.py
+                       
